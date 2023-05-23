@@ -1,10 +1,14 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+
+import { Box, Button, Typography, styled } from "@mui/material";
+
 import ReplyIconSrc from "../images/icon-reply.svg";
-import { CommentWrapper } from "./CommentWrapper";
+
 import { UserIcon } from "./UserIcon";
 import { ButtonAction } from "./ButtonAction";
+import { CommentWrapper } from "./CommentWrapper";
+
+import { IComment } from "../types/Comments";
 
 const RatingButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1.3, 1.4),
@@ -19,7 +23,8 @@ const RatingButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const Rating = () => (
+type RatingProps = Pick<IComment, "score">;
+const Rating = ({ score }: RatingProps) => (
   <Box sx={{ bgcolor: "secondary.main", borderRadius: 1 }}>
     <RatingButton>+</RatingButton>
     <Typography
@@ -31,13 +36,14 @@ const Rating = () => (
         color: "primary.main",
       }}
       component="span">
-      12
+      {score}
     </Typography>
     <RatingButton>-</RatingButton>
   </Box>
 );
 
-const ContentTop = () => (
+type ContentTopProps = Pick<IComment, "user" | "createdAt">;
+const ContentTop = ({ user: { image, username }, createdAt }: ContentTopProps) => (
   <Box
     sx={{
       display: "flex",
@@ -52,37 +58,50 @@ const ContentTop = () => (
         ":hover": { background: "none" },
       }}
       disableRipple>
-      <UserIcon src="#" />
-      <Typography sx={{ fontWeight: 700, ml: 2 }}>amyrobson</Typography>
+      <UserIcon image={image} />
+      <Typography sx={{ fontWeight: 700, ml: 2 }}>{username}</Typography>
     </Button>
-    <Typography sx={{ color: "text.secondary", flexGrow: 1 }}>1 month ago</Typography>
+    <Typography sx={{ color: "text.secondary", flexGrow: 1 }}>{createdAt}</Typography>
     <ButtonAction iconAlt="Reply icon" iconSrc={ReplyIconSrc}>
       Reply
     </ButtonAction>
   </Box>
 );
 
-const ContentBottom = () => (
+type ContentBottomProps = Pick<IComment, "content" | "replyingTo">;
+const ContentBottom = ({ content, replyingTo }: ContentBottomProps) => (
   <Box>
     <Typography
       sx={{
         color: "text.secondary",
         pr: 4,
       }}>
-      Impressive! Though it seems the drag feature could be improved. But overall it looks
-      incredible. You've nailed the design and the responsiveness at various breakpoints
-      works really well.
+      {replyingTo && (
+        <Button
+          sx={{
+            p: 0,
+            pb: 0.2,
+            textTransform: "lowercase",
+            fontSize: "1rem",
+            fontWeight: 700,
+            mr: 0.5,
+          }}>
+          @{replyingTo}
+        </Button>
+      )}
+      {content}
     </Typography>
   </Box>
 );
 
-export function Comment() {
+type CommentProps = Omit<IComment, "id" | "replies">;
+export function Comment({ content, createdAt, score, user, replyingTo }: CommentProps) {
   return (
     <CommentWrapper gap={3}>
-      <Rating />
+      <Rating score={score} />
       <Box sx={{ flexGrow: 1 }}>
-        <ContentTop />
-        <ContentBottom />
+        <ContentTop user={user} createdAt={createdAt} />
+        <ContentBottom content={content} replyingTo={replyingTo} />
       </Box>
     </CommentWrapper>
   );

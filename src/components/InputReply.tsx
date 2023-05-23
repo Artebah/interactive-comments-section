@@ -2,11 +2,15 @@ import React from "react";
 import { Box, Button } from "@mui/material";
 import { UserIcon } from "./UserIcon";
 import { CommentWrapper } from "./CommentWrapper";
+import { IUser } from "../types/User";
 
-export function InputReply() {
+interface InputReplyProps {
+  user: IUser;
+}
+export function InputReply({ user }: InputReplyProps) {
   return (
     <CommentWrapper gap={2}>
-      <UserIcon src="#" />
+      <UserIcon image={user.image} />
       <Box
         sx={{
           fontFamily: "Rubik",

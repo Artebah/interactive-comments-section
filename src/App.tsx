@@ -1,14 +1,42 @@
 import React from "react";
-import { Box, Container } from "@mui/material";
+
+import { Box, Container, Typography } from "@mui/material";
+
 import { Comment } from "./components/Comment";
+import { ReplyWrapper } from "./components/ReplyWrapper";
+import { commentsApi } from "./services/commentsService";
 import { InputReply } from "./components/InputReply";
-import { SubCommentWrapper } from "./components/SubCommentWrapper";
 
 function App() {
+  const { data: comments, isLoading, isError } = commentsApi.useGetCommentsQuery();
+
   return (
     <Box className="App">
       <Container maxWidth="lg">
-        <Comment />
+        {isLoading && <Typography>Loading...</Typography>}
+        {isError && <Typography>Error :(</Typography>}
+        {comments &&
+          comments.map(({ id, content, createdAt, score, user, replies }) => (
+            <React.Fragment key={id}>
+              <Comment
+                content={content}
+                createdAt={createdAt}
+                score={score}
+                user={user}
+              />
+              <ReplyWrapper>
+                {replies.map(({ content, createdAt, score, user, replyingTo }) => (
+                  <Comment
+                    content={content}
+                    createdAt={createdAt}
+                    score={score}
+                    user={user}
+                    replyingTo={replyingTo}
+                  />
+                ))}
+              </ReplyWrapper>
+            </React.Fragment>
+          ))}
       </Container>
 
       {/*Frontend mentor*/}

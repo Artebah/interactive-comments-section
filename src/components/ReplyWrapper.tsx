@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-interface SubCommentWrapperProps {
+interface ReplyWrapperProps {
   children: React.ReactNode;
 }
 
-export function SubCommentWrapper({ children }: SubCommentWrapperProps) {
+export function ReplyWrapper({ children }: ReplyWrapperProps) {
   return (
     <Box
       sx={{
