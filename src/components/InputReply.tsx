@@ -5,20 +5,21 @@ import { CommentWrapper } from "./CommentWrapper";
 import { IUser } from "../types/User";
 
 interface InputReplyProps {
-  user: IUser;
+  currentUser: IUser;
 }
-export function InputReply({ user }: InputReplyProps) {
+export function InputReply({ currentUser }: InputReplyProps) {
   return (
     <CommentWrapper gap={2}>
-      <UserIcon image={user.image} />
+      <UserIcon image={currentUser.image} />
       <Box
         sx={{
           fontFamily: "Rubik",
+          fontSize: "0.9375rem",
           resize: "none",
           px: 2,
           py: 1.5,
           flexGrow: 1,
-          height: 70,
+          height: 90,
           borderColor: "#EBEBEB",
           borderRadius: 1,
         }}
