@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { IComment } from "../types/Comments";
 import { IUser } from "../types/User";
 
+// process.env.API_HOST
+
 export const commentsApi = createApi({
   reducerPath: "commentsAPI",
   baseQuery: fetchBaseQuery({

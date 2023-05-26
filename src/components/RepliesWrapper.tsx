@@ -5,7 +5,7 @@ interface ReplyWrapperProps {
   children: React.ReactNode;
 }
 
-export function ReplyWrapper({ children }: ReplyWrapperProps) {
+export function RepliesWrapper({ children }: ReplyWrapperProps) {
   return (
     <Box
       sx={{

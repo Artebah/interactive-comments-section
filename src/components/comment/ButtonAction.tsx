@@ -7,13 +7,9 @@ interface ButtonActionProps {
   iconAlt: string;
   isActionDelete?: boolean;
 }
+export function ButtonAction(props: ButtonActionProps) {
+  const { children, iconSrc, iconAlt, isActionDelete = false } = props;
 
-export function ButtonAction({
-  children,
-  iconSrc,
-  iconAlt,
-  isActionDelete = false,
-}: ButtonActionProps) {
   return (
     <Button
       sx={{
