@@ -6,12 +6,14 @@ interface ButtonActionProps {
   iconSrc: string;
   iconAlt: string;
   isActionDelete?: boolean;
+  onClick?: () => void;
 }
 export function ButtonAction(props: ButtonActionProps) {
-  const { children, iconSrc, iconAlt, isActionDelete = false } = props;
+  const { children, iconSrc, iconAlt, isActionDelete = false, onClick } = props;
 
   return (
     <Button
+      onClick={onClick}
       sx={{
         textTransform: "capitalize",
         fontWeight: 700,

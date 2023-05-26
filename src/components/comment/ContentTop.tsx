@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 
 import { UserIcon } from "../UserIcon";
@@ -8,6 +9,7 @@ import { IUser } from "../../types/User";
 import ReplyIconSrc from "../../images/icon-reply.svg";
 import EditIconSrc from "../../images/icon-edit.svg";
 import DeleteIconSrc from "../../images/icon-delete.svg";
+import { DeletePopup } from "../DeletePopup";
 
 const ButtonActionUser = () => {
   return (
@@ -18,14 +20,30 @@ const ButtonActionUser = () => {
 };
 
 const ButtonsActionCurrentUser = () => {
+  const [isOpenDeletePopup, setIsOpenDeletePopup] = React.useState(false);
+
+  console.log(isOpenDeletePopup);
+
+  const openDeletePopup = () => {
+    setIsOpenDeletePopup(true);
+  };
+  const closeDeletePopup = () => {
+    setIsOpenDeletePopup(false);
+  };
+
   return (
     <Box sx={{ display: "flex", gap: 1 }}>
       <ButtonAction iconAlt="Edit" iconSrc={EditIconSrc}>
         Edit
       </ButtonAction>
-      <ButtonAction iconAlt="Delete" iconSrc={DeleteIconSrc} isActionDelete>
+      <ButtonAction
+        onClick={openDeletePopup}
+        iconAlt="Delete"
+        iconSrc={DeleteIconSrc}
+        isActionDelete>
         Delete
       </ButtonAction>
+      <DeletePopup isOpen={isOpenDeletePopup} onClose={closeDeletePopup} />
     </Box>
   );
 };
