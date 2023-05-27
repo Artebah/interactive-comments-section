@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, Modal, Typography, useTheme } from "@mui/material";
 
 interface DeleteButtonProps {
   children: React.ReactNode;
@@ -7,6 +7,8 @@ interface DeleteButtonProps {
   onClick: () => void;
 }
 const DeleteButton = ({ children, isRed, onClick }: DeleteButtonProps) => {
+  const theme = useTheme();
+
   return (
     <Button
       onClick={onClick}
@@ -16,6 +18,9 @@ const DeleteButton = ({ children, isRed, onClick }: DeleteButtonProps) => {
         py: 1,
         px: 3,
         borderRadius: 2,
+        [theme.breakpoints.down("md")]: {
+          px: 2,
+        },
         ":hover": {
           bgcolor: isRed ? "#ED787C" : "#838996",
         },
@@ -30,6 +35,8 @@ interface DeletePopupProps {
   onClose: any;
 }
 export function DeletePopup({ isOpen, onClose }: DeletePopupProps) {
+  const theme = useTheme();
+
   const buttonCancelHandle = () => {
     onClose();
   };
@@ -46,17 +53,23 @@ export function DeletePopup({ isOpen, onClose }: DeletePopupProps) {
           py: 3,
           bgcolor: "#fff",
           borderRadius: 2,
-          maxWidth: 320,
+          width: 320,
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
+          [theme.breakpoints.down("sm")]: {
+            width: 290,
+          },
         }}>
         <Typography
           sx={{
             fontSize: "1.25rem",
             fontWeight: 700,
             mb: 1.6,
+            [theme.breakpoints.down("md")]: {
+              fontSize: "18px",
+            },
           }}>
           Delete comment
         </Typography>
