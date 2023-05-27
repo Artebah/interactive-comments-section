@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 
 import { UserIcon } from "../UserIcon";
 import { ButtonAction } from "./ButtonAction";
@@ -21,8 +21,7 @@ const ButtonActionUser = () => {
 
 const ButtonsActionCurrentUser = () => {
   const [isOpenDeletePopup, setIsOpenDeletePopup] = React.useState(false);
-
-  console.log(isOpenDeletePopup);
+  const theme = useTheme();
 
   const openDeletePopup = () => {
     setIsOpenDeletePopup(true);
@@ -32,10 +31,14 @@ const ButtonsActionCurrentUser = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", gap: 1 }}>
-      <ButtonAction iconAlt="Edit" iconSrc={EditIconSrc}>
-        Edit
-      </ButtonAction>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        [theme.breakpoints.down("sm")]: {
+          gap: 0.5,
+        },
+      }}>
       <ButtonAction
         onClick={openDeletePopup}
         iconAlt="Delete"
@@ -43,6 +46,10 @@ const ButtonsActionCurrentUser = () => {
         isActionDelete>
         Delete
       </ButtonAction>
+      <ButtonAction iconAlt="Edit" iconSrc={EditIconSrc}>
+        Edit
+      </ButtonAction>
+
       <DeletePopup isOpen={isOpenDeletePopup} onClose={closeDeletePopup} />
     </Box>
   );
@@ -55,6 +62,14 @@ interface ContentTopProps {
 }
 export const ContentTop = (props: ContentTopProps) => {
   const { user, currentUser, createdAt } = props;
+  const theme = useTheme();
+
+  const isCurrentUser = React.useCallback(() => {
+    if (user.username === currentUser.username) {
+      return true;
+    }
+    return false;
+  }, []);
 
   return (
     <Box
@@ -62,25 +77,54 @@ export const ContentTop = (props: ContentTopProps) => {
         display: "flex",
         alignItems: "center",
         mb: 1.5,
+        flexWrap: "wrap",
       }}>
       <Button
         sx={{
           color: "text.primary",
           textTransform: "lowercase",
-          mr: 1,
+          p: 0,
+          mr: isCurrentUser() ? 0 : 1,
           ":hover": { background: "none" },
         }}
         disableRipple>
         <UserIcon image={user.image} />
         <Typography sx={{ fontWeight: 700, ml: 2 }}>{user.username}</Typography>
       </Button>
-      <Typography sx={{ color: "text.secondary", flexGrow: 1 }}>{createdAt}</Typography>
-
-      {currentUser.username !== user.username ? (
-        <ButtonActionUser />
-      ) : (
-        <ButtonsActionCurrentUser />
+      {isCurrentUser() && (
+        <Box
+          component="span"
+          sx={{
+            mx: 1,
+            bgcolor: "primary.main",
+            color: "#fff",
+            fontSize: "0.875rem",
+            px: 0.8,
+            borderRadius: 1,
+          }}>
+          you
+        </Box>
       )}
+      <Typography
+        sx={{
+          color: "text.secondary",
+          flexGrow: 1,
+        }}>
+        {createdAt}
+      </Typography>
+      <Box
+        sx={{
+          [theme.breakpoints.down("md")]: {
+            position: "absolute",
+            right: 20,
+            bottom: 17,
+          },
+          [theme.breakpoints.down("sm")]: {
+            bottom: 20,
+          },
+        }}>
+        {isCurrentUser() ? <ButtonsActionCurrentUser /> : <ButtonActionUser />}
+      </Box>
     </Box>
   );
 };

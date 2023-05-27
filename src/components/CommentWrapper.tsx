@@ -4,9 +4,10 @@ import { Box } from "@mui/material";
 interface CommentWrapperProps {
   children: React.ReactNode;
   gap: number;
+  sxExtra?: object;
 }
 
-export function CommentWrapper({ children, gap }: CommentWrapperProps) {
+export function CommentWrapper({ children, gap, sxExtra }: CommentWrapperProps) {
   return (
     <Box
       sx={{
@@ -17,6 +18,7 @@ export function CommentWrapper({ children, gap }: CommentWrapperProps) {
         padding: 2.5,
         gap: gap,
         mb: 2,
+        ...sxExtra,
       }}>
       {children}
     </Box>
