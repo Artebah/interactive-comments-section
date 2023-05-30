@@ -22,5 +22,13 @@ export const commentsApi = createApi({
         url: "current-user",
       }),
     }),
+    addComment: build.mutation<IComment, Omit<IComment, "id">>({
+      query: (comment) => ({
+        url: "comments",
+        method: "POST",
+        body: comment,
+      }),
+      invalidatesTags: ["comments"],
+    }),
   }),
 });

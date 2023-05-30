@@ -2,7 +2,7 @@ import React from "react";
 
 import { Comment } from "./comment/Comment";
 import { RepliesWrapper } from "./RepliesWrapper";
-import { InputReply } from "./InputReply";
+import { InputComment } from "./InputComment";
 import { StatusTitle } from "./StatusTitle";
 
 import { commentsApi } from "../services/commentsService";
@@ -53,7 +53,7 @@ export function Layout() {
               </RepliesWrapper>
             </React.Fragment>
           ))}
-          <InputReply currentUser={currentUser} />
+          <InputComment currentUser={currentUser} />
         </>
       )}
     </>

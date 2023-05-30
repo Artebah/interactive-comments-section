@@ -7,11 +7,30 @@ import { CommentWrapper } from "./CommentWrapper";
 
 import { IUser } from "../types/User";
 
-interface InputReplyProps {
+import { commentsApi } from "../services/commentsService";
+
+interface InputInputCommentProps {
   currentUser: IUser;
+  isInputReply?: boolean;
 }
-export function InputReply({ currentUser }: InputReplyProps) {
+export function InputComment({ currentUser, isInputReply }: InputInputCommentProps) {
   const theme = useTheme();
+  const [addComment, { isLoading }] = commentsApi.useAddCommentMutation();
+  const textAreaRef = React.useRef<HTMLTextAreaElement>();
+
+  const handleSendingComment = async () => {
+    const textAreaValue = textAreaRef?.current?.value;
+    if (textAreaValue) {
+      await addComment({
+        content: textAreaValue,
+        createdAt: "1s ago",
+        score: 0,
+        user: currentUser,
+        replyingTo: undefined,
+        replies: [],
+      });
+    }
+  };
 
   return (
     <CommentWrapper gap={2} sxExtra={{ flexWrap: "wrap", alignItems: "center" }}>
@@ -25,6 +44,7 @@ export function InputReply({ currentUser }: InputReplyProps) {
         image={currentUser.image}
       />
       <Box
+        ref={textAreaRef}
         sx={{
           fontFamily: "Rubik",
           fontSize: "0.9375rem",
@@ -43,8 +63,12 @@ export function InputReply({ currentUser }: InputReplyProps) {
         }}
         placeholder="Add a comment..."
         component="textarea"></Box>
-      <Button sx={{ px: 2.5, order: 2 }} variant="contained">
-        send
+      <Button
+        disabled={isLoading}
+        onClick={handleSendingComment}
+        sx={{ px: 2.5, order: 2 }}
+        variant="contained">
+        {isInputReply ? "reply" : "send"}
       </Button>
     </CommentWrapper>
   );
