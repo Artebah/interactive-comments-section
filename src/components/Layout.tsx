@@ -2,7 +2,7 @@ import React from "react";
 
 import { Comment } from "./comment/Comment";
 import { RepliesWrapper } from "./RepliesWrapper";
-import { InputReply } from "./InputReply";
+import { InputComment } from "./InputComment";
 import { StatusTitle } from "./StatusTitle";
 
 import { commentsApi } from "../services/commentsService";
@@ -31,29 +31,21 @@ export function Layout() {
         <>
           {comments.map((comment) => (
             <React.Fragment key={comment.id}>
-              <Comment
-                content={comment.content}
-                createdAt={comment.createdAt}
-                score={comment.score}
-                user={comment.user}
-                currentUser={currentUser}
-              />
+              <Comment {...comment} currentUser={currentUser} />
               <RepliesWrapper>
                 {comment.replies.map((reply) => (
                   <Comment
                     key={reply.id}
-                    content={reply.content}
-                    createdAt={reply.createdAt}
-                    score={reply.score}
-                    user={reply.user}
-                    replyingTo={reply.replyingTo}
+                    isReply
+                    {...reply}
+                    parentComment={comment}
                     currentUser={currentUser}
                   />
                 ))}
               </RepliesWrapper>
             </React.Fragment>
           ))}
-          <InputReply currentUser={currentUser} />
+          <InputComment currentUser={currentUser} />
         </>
       )}
     </>
