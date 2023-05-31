@@ -10,10 +10,18 @@ import ReplyIconSrc from "../../images/icon-reply.svg";
 import EditIconSrc from "../../images/icon-edit.svg";
 import DeleteIconSrc from "../../images/icon-delete.svg";
 import { DeletePopup } from "../DeletePopup";
+import { commentReplyDataContext } from "./Comment";
 
 const ButtonActionUser = () => {
+  const commentReplyData = React.useContext(commentReplyDataContext);
+  const isReplyButtonClicked = commentReplyData?.isReplyButtonClicked;
+  const replyButtonHandler = commentReplyData?.setIsReplyButtonClicked;
+
   return (
-    <ButtonAction iconAlt="Reply icon" iconSrc={ReplyIconSrc}>
+    <ButtonAction
+      onClick={() => replyButtonHandler(!isReplyButtonClicked)}
+      iconAlt="Reply icon"
+      iconSrc={ReplyIconSrc}>
       Reply
     </ButtonAction>
   );

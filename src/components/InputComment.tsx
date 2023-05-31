@@ -6,31 +6,101 @@ import { UserIcon } from "./UserIcon";
 import { CommentWrapper } from "./CommentWrapper";
 
 import { IUser } from "../types/User";
+import { IComment, IReply } from "../types/Comments";
 
 import { commentsApi } from "../services/commentsService";
 
-interface InputInputCommentProps {
+import { commentReplyDataContext } from "./comment/Comment";
+
+interface InputCommentProps {
   currentUser: IUser;
   isInputReply?: boolean;
+  commentObj?: IComment;
 }
-export function InputComment({ currentUser, isInputReply }: InputInputCommentProps) {
+export function InputComment(props: InputCommentProps) {
+  const { currentUser, isInputReply, commentObj } = props;
+
   const theme = useTheme();
-  const [addComment, { isLoading }] = commentsApi.useAddCommentMutation();
   const textAreaRef = React.useRef<HTMLTextAreaElement>();
 
+  const commentReplyData = React.useContext(commentReplyDataContext);
+  const replyButtonHandler = commentReplyData?.setIsReplyButtonClicked;
+
+  const [addComment, { isLoading: isLoadingAddComment }] =
+    commentsApi.useAddCommentMutation();
+  const [addCommentReply, { isLoading: isLoadingAddCommentReply }] =
+    commentsApi.useAddCommentReplyMutation();
+
+  React.useEffect(() => {
+    if (isInputReply) {
+      const textArea = textAreaRef.current;
+
+      if (textArea) {
+        if (commentObj) {
+          const username = commentObj.user.username;
+          textArea.defaultValue = "@" + username + ", ";
+        }
+
+        textArea.focus();
+        textArea.selectionStart = textArea.value.length;
+      }
+    }
+  }, [commentObj, isInputReply]);
+
+  /* ====================================================== */
   const handleSendingComment = async () => {
-    const textAreaValue = textAreaRef?.current?.value;
-    if (textAreaValue) {
-      await addComment({
-        content: textAreaValue,
-        createdAt: "1s ago",
-        score: 0,
-        user: currentUser,
-        replyingTo: undefined,
-        replies: [],
-      });
+    const textArea = textAreaRef?.current;
+
+    if (textArea) {
+      if (isInputReply && commentObj) {
+        const replies = commentObj.replies;
+        const lastReply = replies[replies.length - 1];
+
+        let replyId;
+
+        if (replies.length && lastReply.id) {
+          replyId = lastReply.id + 1;
+        } else {
+          replyId = 1;
+        }
+
+        const newReply: IReply = {
+          id: replyId,
+          content: textArea.value,
+          createdAt: "1s ago",
+          replyingTo: commentObj.user.username,
+          score: 0,
+          user: currentUser,
+        };
+
+        const replyingToMark = `@${newReply.replyingTo},`;
+        const content = newReply.content;
+        if (content.includes(replyingToMark)) {
+          newReply.content = newReply.content.slice(replyingToMark.length).trim();
+        }
+
+        await addCommentReply({
+          ...commentObj,
+          replies: [...replies, newReply],
+        });
+
+        replyButtonHandler(false);
+      } else {
+        const newComment: IComment = {
+          content: textArea.value,
+          createdAt: "1s ago",
+          score: 0,
+          user: currentUser,
+          replies: [],
+        };
+
+        await addComment(newComment);
+
+        textArea.value = "";
+      }
     }
   };
+  /* ====================================================== */
 
   return (
     <CommentWrapper gap={2} sxExtra={{ flexWrap: "wrap", alignItems: "center" }}>
@@ -62,9 +132,11 @@ export function InputComment({ currentUser, isInputReply }: InputInputCommentPro
           },
         }}
         placeholder="Add a comment..."
-        component="textarea"></Box>
+        component="textarea"
+      />
+
       <Button
-        disabled={isLoading}
+        disabled={isLoadingAddComment || isLoadingAddCommentReply}
         onClick={handleSendingComment}
         sx={{ px: 2.5, order: 2 }}
         variant="contained">

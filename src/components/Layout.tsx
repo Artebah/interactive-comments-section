@@ -31,22 +31,14 @@ export function Layout() {
         <>
           {comments.map((comment) => (
             <React.Fragment key={comment.id}>
-              <Comment
-                content={comment.content}
-                createdAt={comment.createdAt}
-                score={comment.score}
-                user={comment.user}
-                currentUser={currentUser}
-              />
+              <Comment {...comment} currentUser={currentUser} />
               <RepliesWrapper>
                 {comment.replies.map((reply) => (
                   <Comment
                     key={reply.id}
-                    content={reply.content}
-                    createdAt={reply.createdAt}
-                    score={reply.score}
-                    user={reply.user}
-                    replyingTo={reply.replyingTo}
+                    isReply
+                    {...reply}
+                    parentComment={comment}
                     currentUser={currentUser}
                   />
                 ))}
