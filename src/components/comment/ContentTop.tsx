@@ -9,17 +9,26 @@ import { IUser } from "../../types/User";
 import ReplyIconSrc from "../../images/icon-reply.svg";
 import EditIconSrc from "../../images/icon-edit.svg";
 import DeleteIconSrc from "../../images/icon-delete.svg";
+
 import { DeletePopup } from "../DeletePopup";
-import { commentReplyDataContext } from "./Comment";
+import { replyContext } from "../CommentLayout";
+
+//import { commentReplyDataContext } from "./Comment";
 
 const ButtonActionUser = () => {
-  const commentReplyData = React.useContext(commentReplyDataContext);
+  const commentReplyData = React.useContext(replyContext);
   const isReplyButtonClicked = commentReplyData?.isReplyButtonClicked;
-  const replyButtonHandler = commentReplyData?.setIsReplyButtonClicked;
+  const setIsReplyButtonClicked = commentReplyData?.setIsReplyButtonClicked;
+
+  const replyButtonHandler = () => {
+    if (setIsReplyButtonClicked) {
+      setIsReplyButtonClicked(!isReplyButtonClicked);
+    }
+  };
 
   return (
     <ButtonAction
-      onClick={() => replyButtonHandler(!isReplyButtonClicked)}
+      onClick={replyButtonHandler}
       iconAlt="Reply icon"
       iconSrc={ReplyIconSrc}>
       Reply

@@ -6,7 +6,7 @@ interface CommentWrapperProps {
   gap: number;
   sxExtra?: object;
 }
-export function CommentWrapper({ children, gap, sxExtra }: CommentWrapperProps) {
+export function Wrapper({ children, gap, sxExtra }: CommentWrapperProps) {
   return (
     <Box
       sx={{

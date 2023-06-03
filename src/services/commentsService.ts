@@ -17,11 +17,13 @@ export const commentsApi = createApi({
       }),
       providesTags: ["comments"],
     }),
+
     getCurrentUser: build.query<IUser, void>({
       query: () => ({
         url: "current-user",
       }),
     }),
+
     addComment: build.mutation<IComment, IComment>({
       query: (comment) => ({
         url: "comments",
@@ -30,7 +32,17 @@ export const commentsApi = createApi({
       }),
       invalidatesTags: ["comments"],
     }),
+
     addCommentReply: build.mutation<IComment, IComment>({
+      query: (comment) => ({
+        url: "comments/" + comment.id,
+        method: "PUT",
+        body: comment,
+      }),
+      invalidatesTags: ["comments"],
+    }),
+
+    changeRating: build.mutation<IComment, IComment>({
       query: (comment) => ({
         url: "comments/" + comment.id,
         method: "PUT",

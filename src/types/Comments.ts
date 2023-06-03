@@ -1,7 +1,7 @@
 import { IUser } from "./User";
 
 export interface IComment {
-  id?: number;
+  id: number;
   content: string;
   createdAt: string;
   score: number;

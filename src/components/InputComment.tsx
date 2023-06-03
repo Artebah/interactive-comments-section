@@ -3,14 +3,14 @@ import React from "react";
 import { Box, Button, useTheme } from "@mui/material";
 
 import { UserIcon } from "./UserIcon";
-import { CommentWrapper } from "./CommentWrapper";
+import { Wrapper } from "./Wrapper";
 
 import { IUser } from "../types/User";
 import { IComment, IReply } from "../types/Comments";
 
 import { commentsApi } from "../services/commentsService";
 
-import { commentReplyDataContext } from "./comment/Comment";
+import { replyContext } from "./CommentLayout";
 
 interface InputCommentProps {
   currentUser: IUser;
@@ -23,7 +23,7 @@ export function InputComment(props: InputCommentProps) {
   const theme = useTheme();
   const textAreaRef = React.useRef<HTMLTextAreaElement>();
 
-  const commentReplyData = React.useContext(commentReplyDataContext);
+  const commentReplyData = React.useContext(replyContext);
   const replyButtonHandler = commentReplyData?.setIsReplyButtonClicked;
 
   const [addComment, { isLoading: isLoadingAddComment }] =
@@ -56,6 +56,8 @@ export function InputComment(props: InputCommentProps) {
         const replies = commentObj.replies;
         const lastReply = replies[replies.length - 1];
 
+        console.log(commentObj);
+
         let replyId;
 
         if (replies.length && lastReply.id) {
@@ -84,9 +86,12 @@ export function InputComment(props: InputCommentProps) {
           replies: [...replies, newReply],
         });
 
-        replyButtonHandler(false);
+        if (replyButtonHandler) {
+          replyButtonHandler(false);
+        }
       } else {
-        const newComment: IComment = {
+        const newComment = {
+          id: 0,
           content: textArea.value,
           createdAt: "1s ago",
           score: 0,
@@ -103,7 +108,7 @@ export function InputComment(props: InputCommentProps) {
   /* ====================================================== */
 
   return (
-    <CommentWrapper gap={2} sxExtra={{ flexWrap: "wrap", alignItems: "center" }}>
+    <Wrapper gap={2} sxExtra={{ flexWrap: "wrap", alignItems: "center" }}>
       <UserIcon
         sxExtra={{
           [theme.breakpoints.down("md")]: {
@@ -142,6 +147,6 @@ export function InputComment(props: InputCommentProps) {
         variant="contained">
         {isInputReply ? "reply" : "send"}
       </Button>
-    </CommentWrapper>
+    </Wrapper>
   );
 }

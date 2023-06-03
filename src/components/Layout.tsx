@@ -1,11 +1,11 @@
 import React from "react";
 
-import { Comment } from "./comment/Comment";
 import { RepliesWrapper } from "./RepliesWrapper";
 import { InputComment } from "./InputComment";
 import { StatusTitle } from "./StatusTitle";
 
 import { commentsApi } from "../services/commentsService";
+import { CommentLayout } from "./CommentLayout";
 
 export function Layout() {
   const {
@@ -29,16 +29,22 @@ export function Layout() {
 
       {comments && currentUser && (
         <>
-          {comments.map((comment) => (
-            <React.Fragment key={comment.id}>
-              <Comment {...comment} currentUser={currentUser} />
+          {comments.map(({ id: commentId, ...comment }) => (
+            <React.Fragment key={commentId}>
+              <CommentLayout
+                {...comment}
+                commentId={commentId}
+                currentUser={currentUser}
+              />
               <RepliesWrapper>
-                {comment.replies.map((reply) => (
-                  <Comment
-                    key={reply.id}
-                    isReply
+                {comment.replies.map(({ id: replyId, ...reply }) => (
+                  <CommentLayout
+                    key={replyId}
                     {...reply}
-                    parentComment={comment}
+                    replies={comment.replies}
+                    parentComment={{ ...comment, id: commentId }}
+                    replyId={replyId}
+                    commentId={commentId}
                     currentUser={currentUser}
                   />
                 ))}
