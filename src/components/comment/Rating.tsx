@@ -55,27 +55,21 @@ export const Rating = ({ score }: RatingProps) => {
 
       if (type === "like") {
         if (isReset) {
-          console.log("reset");
           newRating = score + 1;
         } else {
           if (isDisliked) {
-            console.log("like after dislike");
             newRating = score + 2;
           } else {
-            console.log("like");
             newRating = score + 1;
           }
         }
       } else {
         if (isReset) {
-          console.log("reset");
           newRating = score - 1;
         } else {
           if (isLiked) {
-            console.log("dislike after like");
             newRating = score - 2;
           } else {
-            console.log("dislike");
             newRating = score - 1;
           }
         }
@@ -86,15 +80,9 @@ export const Rating = ({ score }: RatingProps) => {
       const replyId = comment.replyId;
 
       if (parentComment && replyId) {
-        newComment = {
-          ...parentComment,
-          replies: [...parentComment.replies],
-        };
+        newComment = structuredClone(parentComment);
 
-        newComment.replies[replyId - 1] = {
-          ...newComment.replies[replyId - 1],
-          score: newRating,
-        };
+        newComment.replies[replyId - 1].score = newRating;
 
         mutateRating(newComment);
       } else {
@@ -128,25 +116,6 @@ export const Rating = ({ score }: RatingProps) => {
       setIsDisliked(false);
     }
   };
-
-  //const likeButtonHandler = () => {
-  //  if (isLiked) {
-  //    removeLike();
-  //    setIsLiked(false);
-  //  } else {
-  //    addLike();
-  //    setIsLiked(true);
-  //  }
-  //};
-  //const dislikeButtonHandler = () => {
-  //  if (isDisliked) {
-  //    addLike();
-  //    setIsDisliked(false);
-  //  } else {
-  //    removeLike();
-  //    setIsDisliked(true);
-  //  }
-  //};
 
   return (
     <Box

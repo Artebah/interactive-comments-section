@@ -10,12 +10,13 @@ import { InputComment } from "./InputComment";
 import { IComment, IReply } from "../types/Comments";
 import { IUser } from "../types/User";
 
+/* contexts */
 interface ReplyContextType {
   isReplyButtonClicked: boolean;
   setIsReplyButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const replyContext = React.createContext<ReplyContextType | null>(null);
-
+// ========================================================================================
 interface RatingContextType {
   comment: IComment & {
     replyId?: number;
@@ -23,6 +24,15 @@ interface RatingContextType {
   parentComment: IComment;
 }
 export const ratingContext = React.createContext<RatingContextType | null>(null);
+// ========================================================================================
+interface EditContextType {
+  isEditButtonClicked: boolean;
+  setIsEditButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  commentObj: IComment & { replyId: number };
+  parentComment: IComment;
+}
+export const editContext = React.createContext<EditContextType | null>(null);
+/* contexts */
 
 type CommentLayoutProps = Omit<IComment, "replies" | "id"> & {
   commentId: number;
@@ -47,28 +57,18 @@ export function CommentLayout(props: CommentLayoutProps) {
   } = props;
 
   const [isReplyButtonClicked, setIsReplyButtonClicked] = React.useState(false);
+  const [isEditButtonClicked, setIsEditButtonClicked] = React.useState(false);
+
   const theme = useTheme();
 
-  let commentObj;
-  if (!replyId) {
-    commentObj = {
-      content,
-      createdAt,
-      score,
-      user,
-      replies,
-      id: commentId,
-    };
-  } else {
-    commentObj = {
-      content,
-      createdAt,
-      score,
-      user,
-      replies,
-      id: commentId, // якщо треба, то додати в об'єкт replyId
-    };
-  }
+  const commentObj = {
+    content,
+    createdAt,
+    score,
+    user,
+    replies,
+    id: commentId,
+  };
 
   return (
     <replyContext.Provider
@@ -85,15 +85,27 @@ export function CommentLayout(props: CommentLayoutProps) {
           },
         }}>
         <ratingContext.Provider
-          value={{
-            comment: { ...commentObj, replyId } as IComment & { replyId: number },
-            parentComment: parentComment as IComment,
-          }}>
+          value={
+            {
+              comment: { ...commentObj, replyId },
+              parentComment,
+            } as RatingContextType
+          }>
           <Rating score={score} />
         </ratingContext.Provider>
-        <Box sx={{ flexGrow: 1 }}>
-          <ContentTop user={user} createdAt={createdAt} currentUser={currentUser} />
-          <ContentBottom content={content} replyingTo={replyingTo} />
+        <Box sx={{ flexGrow: 1, width: 1 }}>
+          <editContext.Provider
+            value={
+              {
+                isEditButtonClicked,
+                setIsEditButtonClicked,
+                commentObj: { ...commentObj, replyId },
+                parentComment,
+              } as EditContextType
+            }>
+            <ContentTop user={user} createdAt={createdAt} currentUser={currentUser} />
+            <ContentBottom content={content} replyingTo={replyingTo} />
+          </editContext.Provider>
         </Box>
       </Wrapper>
       {isReplyButtonClicked && (

@@ -50,5 +50,13 @@ export const commentsApi = createApi({
       }),
       invalidatesTags: ["comments"],
     }),
+    updateComment: build.mutation<void, IComment>({
+      query: (comment) => ({
+        url: "comments/" + comment.id,
+        method: "PUT",
+        body: comment,
+      }),
+      invalidatesTags: ["comments"],
+    }),
   }),
 });

@@ -3,6 +3,7 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 
 import { UserIcon } from "../UserIcon";
 import { ButtonAction } from "./ButtonAction";
+import { DeletePopup } from "../DeletePopup";
 
 import { IUser } from "../../types/User";
 
@@ -10,10 +11,7 @@ import ReplyIconSrc from "../../images/icon-reply.svg";
 import EditIconSrc from "../../images/icon-edit.svg";
 import DeleteIconSrc from "../../images/icon-delete.svg";
 
-import { DeletePopup } from "../DeletePopup";
-import { replyContext } from "../CommentLayout";
-
-//import { commentReplyDataContext } from "./Comment";
+import { editContext, replyContext } from "../CommentLayout";
 
 const ButtonActionUser = () => {
   const commentReplyData = React.useContext(replyContext);
@@ -37,14 +35,25 @@ const ButtonActionUser = () => {
 };
 
 const ButtonsActionCurrentUser = () => {
-  const [isOpenDeletePopup, setIsOpenDeletePopup] = React.useState(false);
   const theme = useTheme();
+
+  const [isOpenDeletePopup, setIsOpenDeletePopup] = React.useState(false);
+
+  const editData = React.useContext(editContext);
+  const isEditButtonClicked = editData?.isEditButtonClicked;
+  const setIsEditButtonClicked = editData?.setIsEditButtonClicked;
 
   const openDeletePopup = () => {
     setIsOpenDeletePopup(true);
   };
   const closeDeletePopup = () => {
     setIsOpenDeletePopup(false);
+  };
+
+  const editButtonHandler = () => {
+    if (setIsEditButtonClicked) {
+      setIsEditButtonClicked(!isEditButtonClicked);
+    }
   };
 
   return (
@@ -63,7 +72,7 @@ const ButtonsActionCurrentUser = () => {
         isActionDelete>
         Delete
       </ButtonAction>
-      <ButtonAction iconAlt="Edit" iconSrc={EditIconSrc}>
+      <ButtonAction onClick={editButtonHandler} iconAlt="Edit" iconSrc={EditIconSrc}>
         Edit
       </ButtonAction>
 
@@ -86,7 +95,7 @@ export const ContentTop = (props: ContentTopProps) => {
       return true;
     }
     return false;
-  }, []);
+  }, [currentUser, user]);
 
   return (
     <Box

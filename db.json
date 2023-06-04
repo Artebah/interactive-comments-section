@@ -10,7 +10,7 @@
     {
       "content": "Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.",
       "createdAt": "1 month ago",
-      "score": 16,
+      "score": 15,
       "user": {
         "image": {
           "png": "./images/avatars/image-amyrobson.png",
@@ -18,22 +18,7 @@
         },
         "username": "amyrobson"
       },
-      "replies": [
-        {
-          "id": 1,
-          "content": "reply",
-          "createdAt": "1s ago",
-          "replyingTo": "amyrobson",
-          "score": 0,
-          "user": {
-            "image": {
-              "png": "./images/avatars/image-juliusomo.png",
-              "webp": "./images/avatars/image-juliusomo.webp"
-            },
-            "username": "juliusomo"
-          }
-        }
-      ],
+      "replies": [],
       "id": 1
     },
     {
@@ -64,7 +49,7 @@
         },
         {
           "id": 2,
-          "content": "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant.",
+          "content": "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant. Edit :)",
           "createdAt": "2 days ago",
           "score": 2,
           "replyingTo": "ramsesmiron",
@@ -75,23 +60,23 @@
             },
             "username": "juliusomo"
           }
-        },
-        {
-          "id": 3,
-          "content": "reply on reply",
-          "createdAt": "1s ago",
-          "replyingTo": "ramsesmiron",
-          "score": 0,
-          "user": {
-            "image": {
-              "png": "./images/avatars/image-juliusomo.png",
-              "webp": "./images/avatars/image-juliusomo.webp"
-            },
-            "username": "juliusomo"
-          }
         }
       ],
       "id": 2
+    },
+    {
+      "content": "Another comment Edit :D",
+      "createdAt": "1s ago",
+      "score": 0,
+      "user": {
+        "image": {
+          "png": "./images/avatars/image-juliusomo.png",
+          "webp": "./images/avatars/image-juliusomo.webp"
+        },
+        "username": "juliusomo"
+      },
+      "replies": [],
+      "id": 3
     }
   ]
 }

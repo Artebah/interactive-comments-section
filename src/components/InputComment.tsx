@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Button, useTheme } from "@mui/material";
+import { Button, useTheme, styled } from "@mui/material";
 
 import { UserIcon } from "./UserIcon";
 import { Wrapper } from "./Wrapper";
@@ -12,6 +12,48 @@ import { commentsApi } from "../services/commentsService";
 
 import { replyContext } from "./CommentLayout";
 
+export const TextAreaComment = styled("textarea")(({ theme, sx }) =>
+  theme.unstable_sx({
+    fontFamily: "Rubik",
+    fontSize: "1rem",
+    lineHeight: 1.4,
+    resize: "none",
+    px: 2,
+    py: 1.5,
+    flexGrow: 1,
+    height: 90,
+    borderColor: "#EBEBEB",
+    borderRadius: 1,
+    [theme.breakpoints.down("md")]: {
+      p: 1,
+      order: 0,
+      minWidth: "100%",
+    },
+    ...sx,
+  })
+);
+
+interface InputCommentButtonProps {
+  onClick: () => void;
+  children: React.ReactNode;
+  disabled?: boolean;
+  sx?: {};
+}
+export const InputCommentButton = ({
+  onClick,
+  children,
+  disabled = false,
+  sx,
+}: InputCommentButtonProps) => (
+  <Button
+    disabled={disabled}
+    onClick={onClick}
+    sx={{ px: 2.5, ...sx }}
+    variant="contained">
+    {children}
+  </Button>
+);
+
 interface InputCommentProps {
   currentUser: IUser;
   isInputReply?: boolean;
@@ -21,7 +63,7 @@ export function InputComment(props: InputCommentProps) {
   const { currentUser, isInputReply, commentObj } = props;
 
   const theme = useTheme();
-  const textAreaRef = React.useRef<HTMLTextAreaElement>();
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
 
   const commentReplyData = React.useContext(replyContext);
   const replyButtonHandler = commentReplyData?.setIsReplyButtonClicked;
@@ -49,14 +91,12 @@ export function InputComment(props: InputCommentProps) {
 
   /* ====================================================== */
   const handleSendingComment = async () => {
-    const textArea = textAreaRef?.current;
+    const textAreaValue = textAreaRef.current?.value;
 
-    if (textArea) {
+    if (textAreaValue) {
       if (isInputReply && commentObj) {
         const replies = commentObj.replies;
         const lastReply = replies[replies.length - 1];
-
-        console.log(commentObj);
 
         let replyId;
 
@@ -68,7 +108,7 @@ export function InputComment(props: InputCommentProps) {
 
         const newReply: IReply = {
           id: replyId,
-          content: textArea.value,
+          content: textAreaValue.trim(),
           createdAt: "1s ago",
           replyingTo: commentObj.user.username,
           score: 0,
@@ -92,7 +132,7 @@ export function InputComment(props: InputCommentProps) {
       } else {
         const newComment = {
           id: 0,
-          content: textArea.value,
+          content: textAreaValue.trim(),
           createdAt: "1s ago",
           score: 0,
           user: currentUser,
@@ -101,14 +141,14 @@ export function InputComment(props: InputCommentProps) {
 
         await addComment(newComment);
 
-        textArea.value = "";
+        textAreaRef.current.value = "";
       }
     }
   };
   /* ====================================================== */
 
   return (
-    <Wrapper gap={2} sxExtra={{ flexWrap: "wrap", alignItems: "center" }}>
+    <Wrapper gap={2} sxExtra={{ flexWrap: "wrap" }}>
       <UserIcon
         sxExtra={{
           [theme.breakpoints.down("md")]: {
@@ -118,35 +158,19 @@ export function InputComment(props: InputCommentProps) {
         }}
         image={currentUser.image}
       />
-      <Box
+
+      <TextAreaComment
+        name="inputComment-textarea"
         ref={textAreaRef}
-        sx={{
-          fontFamily: "Rubik",
-          fontSize: "0.9375rem",
-          resize: "none",
-          px: 2,
-          py: 1.5,
-          flexGrow: 1,
-          height: 90,
-          borderColor: "#EBEBEB",
-          borderRadius: 1,
-          [theme.breakpoints.down("md")]: {
-            p: 1,
-            order: 0,
-            minWidth: "100%",
-          },
-        }}
-        placeholder="Add a comment..."
-        component="textarea"
+        placeholder="Add comment..."
       />
 
-      <Button
-        disabled={isLoadingAddComment || isLoadingAddCommentReply}
+      <InputCommentButton
         onClick={handleSendingComment}
-        sx={{ px: 2.5, order: 2 }}
-        variant="contained">
+        disabled={isLoadingAddComment || isLoadingAddCommentReply}
+        sx={{ order: 2 }}>
         {isInputReply ? "reply" : "send"}
-      </Button>
+      </InputCommentButton>
     </Wrapper>
   );
 }
