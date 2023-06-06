@@ -1,17 +1,26 @@
 import React from "react";
+
 import { Box, Button, Modal, Typography, useTheme } from "@mui/material";
+
+import { commentsApi } from "../services/commentsService";
+
+import { deleteContext } from "./CommentLayout";
+
+import { IComment } from "../types/Comments";
 
 interface DeleteButtonProps {
   children: React.ReactNode;
-  isRed?: boolean;
   onClick: () => void;
+  isRed?: boolean;
+  disabled?: boolean;
 }
-const DeleteButton = ({ children, isRed, onClick }: DeleteButtonProps) => {
+const DeleteButton = ({ children, isRed, disabled, onClick }: DeleteButtonProps) => {
   const theme = useTheme();
 
   return (
     <Button
       onClick={onClick}
+      disabled={disabled}
       sx={{
         bgcolor: isRed ? "error.main" : "text.secondary",
         color: "#fff",
@@ -37,12 +46,40 @@ interface DeletePopupProps {
 export function DeletePopup({ isOpen, onClose }: DeletePopupProps) {
   const theme = useTheme();
 
+  const [changeCommentDelete, { isLoading: isLoadingChangeCommentDelete }] =
+    commentsApi.useChangeCommentMutation();
+
+  const [deleteComment, { isLoading: isLoadingDeleteComment }] =
+    commentsApi.useDeleteCommentMutation();
+
+  const deleteData = React.useContext(deleteContext);
+  const commentObj = deleteData?.commentObj;
+  const parentComment = deleteData?.parentComment;
+
   const buttonCancelHandle = () => {
     onClose();
   };
   const buttonSubmitHandle = () => {
-    // відправка запиту на видалення
-    onClose();
+    if (commentObj) {
+      let newComment: IComment;
+
+      const replyId = commentObj.replyId;
+
+      if (parentComment && replyId) {
+        newComment = structuredClone(parentComment);
+
+        const filteredReplies = newComment.replies.filter(
+          (reply) => reply.id !== replyId
+        );
+        newComment.replies = filteredReplies;
+
+        changeCommentDelete(newComment);
+      } else {
+        deleteComment(commentObj.id);
+      }
+
+      onClose();
+    }
   };
 
   return (
@@ -84,7 +121,10 @@ export function DeletePopup({ isOpen, onClose }: DeletePopupProps) {
         </Typography>
         <Box sx={{ display: "flex", gap: 1.4 }}>
           <DeleteButton onClick={buttonCancelHandle}>no, cancel</DeleteButton>
-          <DeleteButton onClick={buttonSubmitHandle} isRed>
+          <DeleteButton
+            onClick={buttonSubmitHandle}
+            isRed
+            disabled={isLoadingChangeCommentDelete || isLoadingDeleteComment}>
             yes, delete
           </DeleteButton>
         </Box>

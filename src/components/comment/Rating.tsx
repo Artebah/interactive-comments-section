@@ -40,7 +40,7 @@ export const Rating = ({ score }: RatingProps) => {
   const theme = useTheme();
 
   const [mutateRating, { isLoading: isLoadingRating }] =
-    commentsApi.useChangeRatingMutation();
+    commentsApi.useChangeCommentMutation();
 
   const ratingData = React.useContext(ratingContext);
   const comment = ratingData?.comment;

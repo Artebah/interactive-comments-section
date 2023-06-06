@@ -40,14 +40,12 @@ const ButtonsActionCurrentUser = () => {
   const [isOpenDeletePopup, setIsOpenDeletePopup] = React.useState(false);
 
   const editData = React.useContext(editContext);
+
   const isEditButtonClicked = editData?.isEditButtonClicked;
   const setIsEditButtonClicked = editData?.setIsEditButtonClicked;
 
-  const openDeletePopup = () => {
-    setIsOpenDeletePopup(true);
-  };
-  const closeDeletePopup = () => {
-    setIsOpenDeletePopup(false);
+  const toggleDeletePopup = (value: boolean) => {
+    setIsOpenDeletePopup(value);
   };
 
   const editButtonHandler = () => {
@@ -66,7 +64,7 @@ const ButtonsActionCurrentUser = () => {
         },
       }}>
       <ButtonAction
-        onClick={openDeletePopup}
+        onClick={() => toggleDeletePopup(true)}
         iconAlt="Delete"
         iconSrc={DeleteIconSrc}
         isActionDelete>
@@ -76,7 +74,7 @@ const ButtonsActionCurrentUser = () => {
         Edit
       </ButtonAction>
 
-      <DeletePopup isOpen={isOpenDeletePopup} onClose={closeDeletePopup} />
+      <DeletePopup isOpen={isOpenDeletePopup} onClose={() => toggleDeletePopup(false)} />
     </Box>
   );
 };

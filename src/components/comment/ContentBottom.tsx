@@ -42,7 +42,7 @@ export const ContentBottom = ({ content, replyingTo }: ContentBottomProps) => {
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
 
   const [updateComment, { isLoading: isloadingUpdateComment }] =
-    commentsApi.useUpdateCommentMutation();
+    commentsApi.useChangeCommentMutation();
 
   const updateButtonHandle = () => {
     const textAreaValue = textAreaRef.current?.value;

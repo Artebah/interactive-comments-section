@@ -11,6 +11,7 @@ import { IComment, IReply } from "../types/Comments";
 import { IUser } from "../types/User";
 
 /* contexts */
+// ========================================================================================
 interface ReplyContextType {
   isReplyButtonClicked: boolean;
   setIsReplyButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +33,13 @@ interface EditContextType {
   parentComment: IComment;
 }
 export const editContext = React.createContext<EditContextType | null>(null);
+// ========================================================================================
+interface DeleteContextType {
+  commentObj: IComment & { replyId: number };
+  parentComment: IComment;
+}
+export const deleteContext = React.createContext<DeleteContextType | null>(null);
+// ========================================================================================
 /* contexts */
 
 type CommentLayoutProps = Omit<IComment, "replies" | "id"> & {
@@ -94,18 +102,26 @@ export function CommentLayout(props: CommentLayoutProps) {
           <Rating score={score} />
         </ratingContext.Provider>
         <Box sx={{ flexGrow: 1, width: 1 }}>
-          <editContext.Provider
+          <deleteContext.Provider
             value={
               {
-                isEditButtonClicked,
-                setIsEditButtonClicked,
                 commentObj: { ...commentObj, replyId },
                 parentComment,
-              } as EditContextType
+              } as DeleteContextType
             }>
-            <ContentTop user={user} createdAt={createdAt} currentUser={currentUser} />
-            <ContentBottom content={content} replyingTo={replyingTo} />
-          </editContext.Provider>
+            <editContext.Provider
+              value={
+                {
+                  isEditButtonClicked,
+                  setIsEditButtonClicked,
+                  commentObj: { ...commentObj, replyId },
+                  parentComment,
+                } as EditContextType
+              }>
+              <ContentTop user={user} createdAt={createdAt} currentUser={currentUser} />
+              <ContentBottom content={content} replyingTo={replyingTo} />
+            </editContext.Provider>
+          </deleteContext.Provider>
         </Box>
       </Wrapper>
       {isReplyButtonClicked && (

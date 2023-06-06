@@ -71,7 +71,7 @@ export function InputComment(props: InputCommentProps) {
   const [addComment, { isLoading: isLoadingAddComment }] =
     commentsApi.useAddCommentMutation();
   const [addCommentReply, { isLoading: isLoadingAddCommentReply }] =
-    commentsApi.useAddCommentReplyMutation();
+    commentsApi.useChangeCommentMutation();
 
   React.useEffect(() => {
     if (isInputReply) {
@@ -89,7 +89,6 @@ export function InputComment(props: InputCommentProps) {
     }
   }, [commentObj, isInputReply]);
 
-  /* ====================================================== */
   const handleSendingComment = async () => {
     const textAreaValue = textAreaRef.current?.value;
 
@@ -145,7 +144,6 @@ export function InputComment(props: InputCommentProps) {
       }
     }
   };
-  /* ====================================================== */
 
   return (
     <Wrapper gap={2} sxExtra={{ flexWrap: "wrap" }}>

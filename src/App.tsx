@@ -7,7 +7,7 @@ import { Layout } from "./components/Layout";
 function App() {
   return (
     <Box className="App">
-      <Container maxWidth="lg">
+      <Container sx={{ mb: 2 }} maxWidth="lg">
         <Layout />
       </Container>
 

@@ -2,12 +2,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { IComment } from "../types/Comments";
 import { IUser } from "../types/User";
 
-// process.env.API_HOST
-
 export const commentsApi = createApi({
   reducerPath: "commentsAPI",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3001/",
+    baseUrl: `${process.env.API_HOST}/`,
   }),
   tagTypes: ["comments"],
   endpoints: (build) => ({
@@ -33,7 +31,7 @@ export const commentsApi = createApi({
       invalidatesTags: ["comments"],
     }),
 
-    addCommentReply: build.mutation<IComment, IComment>({
+    changeComment: build.mutation<void, IComment>({
       query: (comment) => ({
         url: "comments/" + comment.id,
         method: "PUT",
@@ -41,20 +39,10 @@ export const commentsApi = createApi({
       }),
       invalidatesTags: ["comments"],
     }),
-
-    changeRating: build.mutation<IComment, IComment>({
-      query: (comment) => ({
-        url: "comments/" + comment.id,
-        method: "PUT",
-        body: comment,
-      }),
-      invalidatesTags: ["comments"],
-    }),
-    updateComment: build.mutation<void, IComment>({
-      query: (comment) => ({
-        url: "comments/" + comment.id,
-        method: "PUT",
-        body: comment,
+    deleteComment: build.mutation<void, number>({
+      query: (id) => ({
+        url: "comments/" + id,
+        method: "DELETE",
       }),
       invalidatesTags: ["comments"],
     }),
